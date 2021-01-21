@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>iRent</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://masajid390.github.io/BeautifyMarker/leaflet-beautify-marker-icon.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        #map {
+            height: calc(100vh - 46px);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="bg-light text-dark py-1">
+            <div class="container">
+                <div class="form-group mb-0">
+                    <div class="  form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="radio_rent" id="inlineRadio_m" value="m"
+                            v-model="type">
+                        <label class="form-check-label" for="inlineRadio_m">機車</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="radio_rent" id="inlineRadio_c" value="c"
+                            v-model="type">
+                        <label class="form-check-label" for="inlineRadio_c">汽車</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="map"></div>
+        <div style="position: absolute; bottom: 0; left: 0; z-index: 90000;">
+            <div id="toast_errorMessage" class="toast" role="alert" aria-live="polite" aria-atomic="true"
+                data-delay="2000">
+                <div class="toast-header">
+                    <strong class="mr-auto">通知</strong>
+                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="toast-body">
+                    {{errorMessage}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://masajid390.github.io/BeautifyMarker/leaflet-beautify-marker-icon.js"></script>
+    <script src="wicket/wicket.js"></script>
+    <script src="wicket/wicket-leaflet.js"></script>
+
+    <script src="map.js"></script>
+</body>
+
+</html>
