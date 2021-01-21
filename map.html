@@ -11,25 +11,30 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <style>
         #map {
-            height: calc(100vh - 40px);
+            height: calc(100vh);
         }
     </style>
 </head>
 
 <body>
     <div id="app">
-        <div class="sticky-top bg-light text-dark py-1">
-            <div class="container">
-                <div class="form-group mb-0">
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="radio_rent" id="inlineRadio_m" value="m"
-                            v-model="type">
-                        <label class="form-check-label" for="inlineRadio_m">機車</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="radio_rent" id="inlineRadio_c" value="c"
-                            v-model="type">
-                        <label class="form-check-label" for="inlineRadio_c">汽車</label>
+        <div class="position-absolute fixed-top bg-light text-dark">
+            <div class="container py-1">
+                <div class="row">
+                    <div class="col-auto"><b>iRent</b></div>
+                    <div class="col">
+                        <div class="form-group mb-0">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="radio_rent" id="inlineRadio_m"
+                                    value="m" v-model="type">
+                                <label class="form-check-label" for="inlineRadio_m">機車</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="radio_rent" id="inlineRadio_c"
+                                    value="c" v-model="type">
+                                <label class="form-check-label" for="inlineRadio_c">汽車</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

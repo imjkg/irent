@@ -4,7 +4,7 @@ var mapG = {
     polygonGroup: L.layerGroup(),
     batteryGroup: L.layerGroup(),
     radiusCircle: L.circle([0, 0], {
-        radius: 1 * 1000,
+        radius: 1,
         color: 'red',
         fill: false,
         opacity: 0.2
@@ -16,7 +16,7 @@ const app = {
         return {
             token: "",
             type: "m",
-            radius: 5,
+            radius: 2,
             latLng: {
                 lat: 0,
                 lng: 0,
@@ -28,9 +28,17 @@ const app = {
         initMap: function () {
             var vm = this;
             mapG.map = L.map('map', {
-                attributionControl: false
+                attributionControl: false,
+                zoomControl: false
             }).setView([24, 120.5], 14);
 
+            L.control.zoom({
+                position: 'bottomleft'
+            }).addTo(mapG.map);
+
+            L.control.scale({
+                imperial: false
+            }).addTo(mapG.map);
 
 
             mapG.pointGroup.addTo(mapG.map);
@@ -77,6 +85,18 @@ const app = {
 
                 var latlng = L.latLng(latitude, longitude);
                 mapG.map.setView(latlng, 15);
+
+                L.marker([latitude, longitude], {
+                    icon: L.BeautifyIcon.icon({
+                        icon: 'child',
+                        iconShape: 'marker',
+                        borderColor: 'black',
+                        textColor: 'black',
+                        backgroundColor: 'transparent'
+                    }),
+                })
+                    .bindTooltip("<div>你在這裡</div>")
+                    .addTo(mapG.map);
             };
 
             function error(error) {
@@ -196,6 +216,7 @@ const app = {
         setRadiusCircle: function (radius, lat, lng) {
             mapG.radiusCircle.setRadius(radius * 1000);
             mapG.radiusCircle.setLatLng([lat, lng]);
+
         },
         setRentObj: function (rentObj, radius, lat, lng, type) {
             console.log(rentObj);
@@ -221,6 +242,9 @@ const app = {
                 L.marker([e.Latitude, e.Longitude], {
                     icon: L.BeautifyIcon.icon({
                         icon: type == "m" ? 'motorcycle' : 'car',
+                        isAlphaNumericIcon: type == "m",
+                        text: e.Power,
+                        innerIconAnchor: [0, 0],
                         borderColor: 'red',
                         textColor: 'red'
                     }),
@@ -262,8 +286,7 @@ const app = {
                 var popupContent = `\
                 <div><b>名稱:</b>${e.Name}</div>\
                 <div><b>地址:</b>${e.Addr}</div>\
-                <div><b>可借:</b>${e.FullCnt}</div>\
-                <div><b>可還:</b>${e.EmptyCnt}</div>\
+                <div><b>可借:</b>${e.FullCnt} <b>可還:</b>${e.EmptyCnt}</div>\
                 `;
 
                 L.marker([e.Latitude, e.Longitude], {
@@ -284,7 +307,7 @@ const app = {
             this.getPolygon();
             this.getRent();
             mapG.pointGroup.clearLayers();
-            if(newValue=="c"){
+            if (newValue == "c") {
                 mapG.batteryGroup.clearLayers();
             }
         },
