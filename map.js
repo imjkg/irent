@@ -140,19 +140,25 @@ const app = {
         },
         setPolygonObj: function (polygonObj) {
             mapG.polygonGroup.clearLayers();
-
+            var holeLatlngs = [];
             var wkt = new Wkt.Wkt();
             polygonObj.forEach(e => {
                 wkt.read(e);
                 var polygon = wkt.toObject();
-                polygon.setStyle({
-                    color: 'green',
-                    weight: 2,
-                    //fill: false,
-                    fillOpacity: 0.1
-                });
-                polygon.addTo(mapG.polygonGroup);
+                holeLatlngs.push(polygon.getLatLngs());
             });
+
+            L.polygon([
+                [
+                    [[90, -180], [90, 180], [-90, 180], [-90, -180]]
+                ],
+                holeLatlngs],
+                {
+                    color: 'gray',
+                    weight:1,
+                    fillOpacity: 0.5,
+                })
+                .addTo(mapG.polygonGroup);
         },
         getRent: function () {
             var vm = this;
