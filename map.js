@@ -127,6 +127,7 @@ const app = {
                 data: JSON.stringify({ "StationID": "", "IsMotor": isMotor })
             })
                 .done(function (result) {
+                    console.log(result);
                     if (result.ErrorMessage == "Success") {
                         vm.setPolygonObj(result.Data.PolygonObj);
                     }
@@ -155,7 +156,7 @@ const app = {
                 holeLatlngs],
                 {
                     color: 'gray',
-                    weight:1,
+                    weight: 1,
                     fillOpacity: 0.5,
                 })
                 .addTo(mapG.polygonGroup);
@@ -186,6 +187,7 @@ const app = {
                 data: JSON.stringify({ "Radius": radius, "ShowALL": 0, "Latitude": lat, "Longitude": lng })
             })
                 .done(function (result) {
+                    console.log(result);
                     if (result.ErrorMessage == "Success") {
                         vm.setRentObj(result.Data.MotorRentObj, radius, lat, lng, "m");
                     }
@@ -209,6 +211,7 @@ const app = {
                 data: JSON.stringify({ "Radius": radius, "ShowALL": 0, "Latitude": lat, "Longitude": lng })
             })
                 .done(function (result) {
+                    console.log(result);
                     if (result.ErrorMessage == "Success") {
                         vm.setRentObj(result.Data.AnyRentObj, radius, lat, lng, "c");
                     }
@@ -225,7 +228,6 @@ const app = {
 
         },
         setRentObj: function (rentObj, radius, lat, lng, type) {
-            console.log(rentObj);
             mapG.pointGroup.clearLayers();
             rentObj.forEach(e => {
                 var popupContent = "";
@@ -261,7 +263,6 @@ const app = {
             });
         },
         getBatExchangeStation: function (token, radius, lat, lng) {
-            console.log({ "ShowALL": 0, "Longitude": lng, "Radius": radius, "Latitude": lat });
             var vm = this;
 
             $.ajax({
@@ -286,7 +287,6 @@ const app = {
                 .fail(function (jqXHR, textStatus, errorThrown) { console.log(jqXHR, textStatus, errorThrown); });
         },
         setBatExchangeStation: function (batExchangeStationObj, radius, lat, lng) {
-            console.log(batExchangeStationObj);
             mapG.batteryGroup.clearLayers();
             batExchangeStationObj.forEach(e => {
                 var popupContent = `\
@@ -332,4 +332,4 @@ const app = {
         this.initMap();
     },
 }
-Vue.createApp(app).mount('#app')
+Vue.createApp(app).mount('#app');
