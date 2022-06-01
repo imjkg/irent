@@ -54,7 +54,7 @@ const app = {
             var baseMap_PHOTO_MIX = L.tileLayer('https://wmts.nlsc.gov.tw/wmts/PHOTO_MIX/default/GoogleMapsCompatible/{z}/{y}/{x}', {
                 maxZoom: 20,
                 zIndex: 1,
-            });  //正射影像(混合)
+            }); //正射影像(混合)
 
             var baseMap_EMAP = L.tileLayer('https://wmts.nlsc.gov.tw/wmts/EMAP/default/GoogleMapsCompatible/{z}/{y}/{x}', {
                 maxZoom: 20,
@@ -65,12 +65,14 @@ const app = {
             var baseMaps = {
                 "正射影像(混合)": baseMap_PHOTO_MIX,
                 "臺灣通用電子地圖": baseMap_EMAP
-            };  //底圖
-            L.control.layers(baseMaps, null, { position: 'bottomright' }).addTo(mapG.map);
+            }; //底圖
+            L.control.layers(baseMaps, null, {
+                position: 'bottomright'
+            }).addTo(mapG.map);
 
             vm.getCurrentPosition();
             vm.getPolygon();
-        },  //載入地圖
+        }, //載入地圖
         getCurrentPosition: function () {
             var vm = this;
 
@@ -87,14 +89,14 @@ const app = {
                 mapG.map.setView(latlng, 15);
 
                 L.marker([latitude, longitude], {
-                    icon: L.BeautifyIcon.icon({
-                        icon: 'child',
-                        iconShape: 'marker',
-                        borderColor: 'black',
-                        textColor: 'black',
-                        backgroundColor: 'transparent'
-                    }),
-                })
+                        icon: L.BeautifyIcon.icon({
+                            icon: 'child',
+                            iconShape: 'marker',
+                            borderColor: 'black',
+                            textColor: 'black',
+                            backgroundColor: 'transparent'
+                        }),
+                    })
                     .bindTooltip("<div>你在這裡</div>")
                     .addTo(mapG.map);
             };
@@ -104,7 +106,7 @@ const app = {
             };
 
             navigator.geolocation.getCurrentPosition(success, error);
-        },  //定位使用者位置
+        }, //定位使用者位置
         getPolygon: function () {
             var vm = this;
 
@@ -119,24 +121,28 @@ const app = {
             }
 
             $.ajax({
-                url: "https://irentcar-app.azurefd.net/api/GetPolygon",
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                data: JSON.stringify({ "StationID": "", "IsMotor": isMotor })
-            })
+                    url: "https://irentcar-app.azurefd.net/api/GetPolygon",
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    data: JSON.stringify({
+                        "StationID": "",
+                        "IsMotor": isMotor
+                    })
+                })
                 .done(function (result) {
                     console.log(result);
                     if (result.ErrorMessage == "Success") {
                         vm.setPolygonObj(result.Data.PolygonObj);
-                    }
-                    else {
+                    } else {
                         vm.errorMessage = result.ErrorMessage;
                     }
                 })
-                .always(function () { })
-                .fail(function (jqXHR, textStatus, errorThrown) { console.log(jqXHR, textStatus, errorThrown); });
+                .always(function () {})
+                .fail(function (jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR, textStatus, errorThrown);
+                });
 
         },
         setPolygonObj: function (polygonObj) {
@@ -150,11 +156,16 @@ const app = {
             });
 
             L.polygon([
-                [
-                    [[90, -180], [90, 180], [-90, 180], [-90, -180]]
-                ],
-                holeLatlngs],
-                {
+                    [
+                        [
+                            [90, -180],
+                            [90, 180],
+                            [-90, 180],
+                            [-90, -180]
+                        ]
+                    ],
+                    holeLatlngs
+                ], {
                     color: 'gray',
                     weight: 1,
                     fillOpacity: 0.5,
@@ -178,49 +189,61 @@ const app = {
             var vm = this;
 
             $.ajax({
-                url: "https://irentcar-app.azurefd.net/api/MotorRent",
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json"
-                },
-                data: JSON.stringify({ "Radius": radius, "ShowALL": 0, "Latitude": lat, "Longitude": lng })
-            })
+                    url: "https://irentcar-app.azurefd.net/api/MotorRent",
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    },
+                    data: JSON.stringify({
+                        "Radius": radius,
+                        "ShowALL": 0,
+                        "Latitude": lat,
+                        "Longitude": lng
+                    })
+                })
                 .done(function (result) {
                     console.log(result);
                     if (result.ErrorMessage == "Success") {
                         vm.setRentObj(result.Data.MotorRentObj, radius, lat, lng, "m");
-                    }
-                    else {
+                    } else {
                         vm.errorMessage = result.ErrorMessage;
                     }
                 })
-                .always(function () { })
-                .fail(function (jqXHR, textStatus, errorThrown) { console.log(jqXHR, textStatus, errorThrown); });
+                .always(function () {})
+                .fail(function (jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR, textStatus, errorThrown);
+                });
         },
         getRent_c: function (token, radius, lat, lng) {
             var vm = this;
 
             $.ajax({
-                url: "https://irentcar-app.azurefd.net/api/AnyRent",
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json"
-                },
-                data: JSON.stringify({ "Radius": radius, "ShowALL": 0, "Latitude": lat, "Longitude": lng })
-            })
+                    url: "https://irentcar-app.azurefd.net/api/AnyRent",
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    },
+                    data: JSON.stringify({
+                        "Radius": radius,
+                        "ShowALL": 0,
+                        "Latitude": lat,
+                        "Longitude": lng
+                    })
+                })
                 .done(function (result) {
                     console.log(result);
                     if (result.ErrorMessage == "Success") {
                         vm.setRentObj(result.Data.AnyRentObj, radius, lat, lng, "c");
-                    }
-                    else {
+                    } else {
                         vm.errorMessage = result.ErrorMessage;
                     }
                 })
-                .always(function () { })
-                .fail(function (jqXHR, textStatus, errorThrown) { console.log(jqXHR, textStatus, errorThrown); });
+                .always(function () {})
+                .fail(function (jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR, textStatus, errorThrown);
+                });
         },
         setRadiusCircle: function (radius, lat, lng) {
             mapG.radiusCircle.setRadius(radius * 1000);
@@ -237,26 +260,29 @@ const app = {
                         <div><b>車號:</b>${e.CarNo}</div>\
                         <div><b>車型:</b>${e.CarTypeName}</div>\
                         <div><b>電量:</b>${e.Power}%</div>\
+                        <div><b>折扣:</b>${e.DiscountLabel.Describe}</div>\
                         `;
                         break;
                     case "c":
                         popupContent = `\
                         <div><b>車號:</b>${e.CarNo}</div>\
                         <div><b>車型:</b>${e.CarTypeName}</div>\
+                        <div><b>折扣:</b>${e.DiscountLabel.Describe}</div>\
                         `;
                         break;
                 }
 
                 L.marker([e.Latitude, e.Longitude], {
-                    icon: L.BeautifyIcon.icon({
-                        icon: type == "m" ? 'motorcycle' : 'car',
-                        isAlphaNumericIcon: type == "m",
-                        text: e.Power,
-                        innerIconAnchor: [0, 0],
-                        borderColor: 'red',
-                        textColor: 'red'
-                    }),
-                })
+                        icon: L.BeautifyIcon.icon({
+                            icon: type == "m" ? 'motorcycle' : 'car',
+                            isAlphaNumericIcon: type == "m",
+                            text: e.Power,
+                            innerIconAnchor: [0, 0],
+                            borderColor: 'red',
+                            textColor: e.DiscountLabel.Describe ? 'white' : 'red',
+                            backgroundColor: e.DiscountLabel.Describe ? 'red' : 'white',
+                        }),
+                    })
                     .bindPopup(popupContent)
                     .addTo(mapG.pointGroup);
 
@@ -266,25 +292,31 @@ const app = {
             var vm = this;
 
             $.ajax({
-                url: "https://irentcar-app.azurefd.net/api/BatExchangeStation",
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json"
-                },
-                data: JSON.stringify({ "ShowALL": 0, "Longitude": lng, "Radius": radius, "Latitude": lat })
-            })
+                    url: "https://irentcar-app.azurefd.net/api/BatExchangeStation",
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    },
+                    data: JSON.stringify({
+                        "ShowALL": 0,
+                        "Longitude": lng,
+                        "Radius": radius,
+                        "Latitude": lat
+                    })
+                })
                 .done(function (result) {
                     console.log(result);
                     if (result.ErrorMessage == "Success") {
                         vm.setBatExchangeStation(result.Data.BatExchangeStationObj, radius, lat, lng);
-                    }
-                    else {
+                    } else {
                         vm.errorMessage = result.ErrorMessage;
                     }
                 })
-                .always(function () { })
-                .fail(function (jqXHR, textStatus, errorThrown) { console.log(jqXHR, textStatus, errorThrown); });
+                .always(function () {})
+                .fail(function (jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR, textStatus, errorThrown);
+                });
         },
         setBatExchangeStation: function (batExchangeStationObj, radius, lat, lng) {
             mapG.batteryGroup.clearLayers();
@@ -296,13 +328,13 @@ const app = {
                 `;
 
                 L.marker([e.Latitude, e.Longitude], {
-                    icon: L.BeautifyIcon.icon({
-                        icon: 'bolt',
-                        borderColor: 'white',
-                        backgroundColor: 'navy',
-                        textColor: 'yellow'
-                    }),
-                })
+                        icon: L.BeautifyIcon.icon({
+                            icon: 'bolt',
+                            borderColor: 'white',
+                            backgroundColor: 'navy',
+                            textColor: 'yellow'
+                        }),
+                    })
                     .bindPopup(popupContent)
                     .addTo(mapG.batteryGroup);
             });
