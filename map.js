@@ -1,8 +1,8 @@
 var mapG = {
     map: null,
-    pointGroup: L.layerGroup(),
+    rentGroup: L.layerGroup(),
     polygonGroup: L.layerGroup(),
-    batteryGroup: L.layerGroup(),
+    parkGroup: L.layerGroup(),
     radiusCircle: L.circle([0, 0], {
         radius: 1,
         color: 'red',
@@ -41,9 +41,9 @@ const app = {
             }).addTo(mapG.map);
 
 
-            mapG.pointGroup.addTo(mapG.map);
+            mapG.rentGroup.addTo(mapG.map);
             mapG.polygonGroup.addTo(mapG.map);
-            mapG.batteryGroup.addTo(mapG.map);
+            mapG.parkGroup.addTo(mapG.map);
             mapG.radiusCircle.addTo(mapG.map);
 
             mapG.map.on('moveend', function (e) {
@@ -89,14 +89,14 @@ const app = {
                 mapG.map.setView(latlng, 15);
 
                 L.marker([latitude, longitude], {
-                        icon: L.BeautifyIcon.icon({
-                            icon: 'child',
-                            iconShape: 'marker',
-                            borderColor: 'black',
-                            textColor: 'black',
-                            backgroundColor: 'transparent'
-                        }),
-                    })
+                    icon: L.BeautifyIcon.icon({
+                        icon: 'child',
+                        iconShape: 'marker',
+                        borderColor: 'black',
+                        textColor: 'black',
+                        backgroundColor: 'transparent'
+                    }),
+                })
                     .bindTooltip("<div>你在這裡</div>")
                     .addTo(mapG.map);
             };
@@ -121,16 +121,16 @@ const app = {
             }
 
             $.ajax({
-                    url: "https://irentcar-app.azurefd.net/api/GetPolygon",
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    data: JSON.stringify({
-                        "StationID": "",
-                        "IsMotor": isMotor
-                    })
+                url: "https://irentcar-app.azurefd.net/api/GetPolygon",
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                data: JSON.stringify({
+                    "StationID": "",
+                    "IsMotor": isMotor
                 })
+            })
                 .done(function (result) {
                     console.log(result);
                     if (result.ErrorMessage == "Success") {
@@ -139,7 +139,7 @@ const app = {
                         vm.errorMessage = result.ErrorMessage;
                     }
                 })
-                .always(function () {})
+                .always(function () { })
                 .fail(function (jqXHR, textStatus, errorThrown) {
                     console.log(jqXHR, textStatus, errorThrown);
                 });
@@ -156,102 +156,107 @@ const app = {
             });
 
             L.polygon([
+                [
                     [
-                        [
-                            [90, -180],
-                            [90, 180],
-                            [-90, 180],
-                            [-90, -180]
-                        ]
-                    ],
-                    holeLatlngs
-                ], {
-                    color: 'gray',
-                    weight: 1,
-                    fillOpacity: 0.5,
-                })
+                        [90, -180],
+                        [90, 180],
+                        [-90, 180],
+                        [-90, -180]
+                    ]
+                ],
+                holeLatlngs
+            ], {
+                color: 'gray',
+                weight: 1,
+                fillOpacity: 0.5,
+            })
                 .addTo(mapG.polygonGroup);
         },
+        /** 更新資料 */
         getRent: function () {
             var vm = this;
             vm.setRadiusCircle(vm.radius, vm.latLng.lat, vm.latLng.lng);
             switch (vm.type) {
                 case "m":
                     vm.getRent_m(vm.token, vm.radius, vm.latLng.lat, vm.latLng.lng);
-                    vm.getBatExchangeStation(vm.token, vm.radius, vm.latLng.lat, vm.latLng.lng);
                     break;
                 case "c":
                     vm.getRent_c(vm.token, vm.radius, vm.latLng.lat, vm.latLng.lng);
                     break;
             }
         },
+        /** 取得機車 */
         getRent_m: function (token, radius, lat, lng) {
             var vm = this;
 
             $.ajax({
-                    url: "https://irentcar-app.azurefd.net/api/MotorRent",
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${token}`,
-                        "Content-Type": "application/json"
-                    },
-                    data: JSON.stringify({
-                        "Radius": radius,
-                        "ShowALL": 0,
-                        "Latitude": lat,
-                        "Longitude": lng
-                    })
+                url: "https://irentcar-app.azurefd.net/api/MotorRent",
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                data: JSON.stringify({
+                    "Radius": radius,
+                    "ShowALL": 0,
+                    "Latitude": lat,
+                    "Longitude": lng
                 })
+            })
                 .done(function (result) {
                     console.log(result);
                     if (result.ErrorMessage == "Success") {
-                        vm.setRentObj(result.Data.MotorRentObj, radius, lat, lng, "m");
+                        vm.setRentObj(result.Data.MotorRentObj, "m");
                     } else {
                         vm.errorMessage = result.ErrorMessage;
                     }
                 })
-                .always(function () {})
+                .always(function () { })
                 .fail(function (jqXHR, textStatus, errorThrown) {
                     console.log(jqXHR, textStatus, errorThrown);
                 });
         },
+        /** 取得汽車 */
         getRent_c: function (token, radius, lat, lng) {
             var vm = this;
 
             $.ajax({
-                    url: "https://irentcar-app.azurefd.net/api/AnyRent",
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${token}`,
-                        "Content-Type": "application/json"
-                    },
-                    data: JSON.stringify({
-                        "Radius": radius,
-                        "ShowALL": 0,
-                        "Latitude": lat,
-                        "Longitude": lng
-                    })
+                url: "https://irentcar-app.azurefd.net/api/AnyRent",
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                data: JSON.stringify({
+                    "Radius": radius,
+                    "ShowALL": 0,
+                    "Latitude": lat,
+                    "Longitude": lng
                 })
+            })
                 .done(function (result) {
-                    console.log(result);
                     if (result.ErrorMessage == "Success") {
-                        vm.setRentObj(result.Data.AnyRentObj, radius, lat, lng, "c");
+                        vm.setRentObj(result.Data.AnyRentObj, "c");
+                        vm.setParkAreaObj(result.Data.ParkAreaObj, "c");
                     } else {
                         vm.errorMessage = result.ErrorMessage;
                     }
                 })
-                .always(function () {})
+                .always(function () { })
                 .fail(function (jqXHR, textStatus, errorThrown) {
                     console.log(jqXHR, textStatus, errorThrown);
                 });
         },
+        /** 設定半徑範圍 */
         setRadiusCircle: function (radius, lat, lng) {
             mapG.radiusCircle.setRadius(radius * 1000);
             mapG.radiusCircle.setLatLng([lat, lng]);
 
         },
-        setRentObj: function (rentObj, radius, lat, lng, type) {
-            mapG.pointGroup.clearLayers();
+        /** 顯示車輛位置 */
+        setRentObj: function (rentObj, type) {
+            mapG.rentGroup.clearLayers();
+            console.log(rentObj);
             rentObj.forEach(e => {
                 var popupContent = "";
                 switch (type) {
@@ -273,85 +278,90 @@ const app = {
                 }
 
                 L.marker([e.Latitude, e.Longitude], {
-                        icon: L.BeautifyIcon.icon({
-                            icon: type == "m" ? 'motorcycle' : 'car',
-                            isAlphaNumericIcon: type == "m",
-                            text: e.Power,
-                            innerIconAnchor: [0, 0],
-                            borderColor: 'red',
-                            textColor: e.DiscountLabel.Describe ? 'white' : 'red',
-                            backgroundColor: e.DiscountLabel.Describe ? 'red' : 'white',
-                        }),
-                    })
+                    icon: L.BeautifyIcon.icon({
+                        icon: type == "m" ? 'motorcycle' : 'car',
+                        isAlphaNumericIcon: type == "m",
+                        text: e.Power,
+                        innerIconAnchor: [0, 0],
+                        borderColor: 'red',
+                        textColor: e.DiscountLabel.Describe ? 'white' : 'red',
+                        backgroundColor: e.DiscountLabel.Describe ? 'red' : 'white',
+                    }),
+                })
                     .bindPopup(popupContent)
-                    .addTo(mapG.pointGroup);
+                    .addTo(mapG.rentGroup);
 
             });
         },
-        getBatExchangeStation: function (token, radius, lat, lng) {
+        /** 顯示停車場位置 */
+        setParkAreaObj: function (parkAreaObj, type) {
             var vm = this;
 
-            $.ajax({
-                    url: "https://irentcar-app.azurefd.net/api/BatExchangeStation",
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${token}`,
-                        "Content-Type": "application/json"
-                    },
-                    data: JSON.stringify({
-                        "ShowALL": 0,
-                        "Longitude": lng,
-                        "Radius": radius,
-                        "Latitude": lat
-                    })
-                })
-                .done(function (result) {
-                    console.log(result);
-                    if (result.ErrorMessage == "Success") {
-                        vm.setBatExchangeStation(result.Data.BatExchangeStationObj, radius, lat, lng);
-                    } else {
-                        vm.errorMessage = result.ErrorMessage;
-                    }
-                })
-                .always(function () {})
-                .fail(function (jqXHR, textStatus, errorThrown) {
-                    console.log(jqXHR, textStatus, errorThrown);
-                });
-        },
-        setBatExchangeStation: function (batExchangeStationObj, radius, lat, lng) {
-            mapG.batteryGroup.clearLayers();
-            batExchangeStationObj.forEach(e => {
-                var popupContent = `\
-                <div><b>名稱:</b>${e.Name}</div>\
-                <div><b>地址:</b>${e.Addr}</div>\
-                <div><b>可借:</b>${e.FullCnt} <b>可還:</b>${e.EmptyCnt}</div>\
-                `;
+            mapG.parkGroup.clearLayers();
+            console.log(parkAreaObj);
+            parkAreaObj.forEach(e => {
+                const haveCar = e.HaveCar == "Y"        //可租用車輛
+                const haveConn = e.HaveConn == "Y"      //連線狀態
+                const haveFilter = e.HaveFilter == "Y"
+                const haveQuota = e.HaveQuota == "Y"    //還車額度
+                const proParking = e.ProParking == 1    //僅PRO會員可還車
 
-                L.marker([e.Latitude, e.Longitude], {
-                        icon: L.BeautifyIcon.icon({
-                            icon: 'bolt',
-                            borderColor: 'white',
-                            backgroundColor: 'navy',
-                            textColor: 'yellow'
-                        }),
-                    })
+                if (!haveFilter)
+                    console.log(e.ParkingName);
+
+                //無車輛就不顯示
+                // if (!haveCar)
+                //     return
+                var popupContent = "";
+                switch (type) {
+                    case "c":
+                        popupContent = `\
+                        <table>
+                        <tr><th>名稱</th> <td>${e.ParkingName}</td></tr>\
+                        <tr><th>可租用車輛</th> <td>${vm.convert_have(haveCar)}</td></tr>\
+                        <tr><th>僅PRO會員可還車</th> <td>${vm.convert_is(proParking)}</td></tr>\
+                        <tr><th>還車額度</th> <td>${vm.convert_have(haveQuota)}</td></tr>\
+                        </table>
+                        `;
+                        break;
+                }
+
+                L.marker([e.ParkingLat, e.ParkingLng], {
+                    icon: L.BeautifyIcon.icon({
+                        icon: "building",
+                        isAlphaNumericIcon: false,
+                        text: vm.convert_have(haveCar),
+                        innerIconAnchor: [0, 0],
+                        borderColor: !haveCar ? 'black' : 'red',
+                        textColor: !haveCar ? 'white' : 'red',
+                        backgroundColor: !haveCar ? 'black' : 'white',
+                    }),
+                })
                     .bindPopup(popupContent)
-                    .addTo(mapG.batteryGroup);
+                    .addTo(mapG.rentGroup);
+
             });
         },
+        /** 有無 */
+        convert_have: function (v) {
+            return v == true ? "有" : "無"
+        },
+        /** 是否 */
+        convert_is: function (v) {
+            return v == true ? "是" : "否"
+        }
     },
     watch: {
         'type': function (newValue) {
             this.getPolygon();
             this.getRent();
-            mapG.pointGroup.clearLayers();
-            if (newValue == "c") {
-                mapG.batteryGroup.clearLayers();
-            }
+            mapG.rentGroup.clearLayers();
+            mapG.parkGroup.clearLayers();
         },
         'radius': function (newValue) {
             this.getRent();
-            mapG.pointGroup.clearLayers();
+            mapG.rentGroup.clearLayers();
+            mapG.parkGroup.clearLayers();
         },
         'latLng': function (newValue) {
             this.getRent();
